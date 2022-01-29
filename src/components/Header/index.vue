@@ -73,7 +73,8 @@ export default {
     };
   },
   watch: {},
-  computed: {},
+  computed: {
+  },
   methods: {
     //搜索按钮的回调函数向search路由跳转
     goSearch() {

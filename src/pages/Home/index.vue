@@ -19,8 +19,6 @@ import Rank from "@/pages/Home/Rank";
 import Like from "@/pages/Home/Like";
 import Floor from "@/pages/Home/Floor";
 import Brand from "@/pages/Home/Brand";
-import { reqCategoryList } from "@/api";
-console.log(reqCategoryList())
 export default {
   components: {
     ListContainer,
