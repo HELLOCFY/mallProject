@@ -2,59 +2,68 @@
   <!-- {{categoryList}} -->
   <div class="type-nav">
     <div class="container">
-      <div @mouseleave="leaveIndex">
+      <div
+        @mouseleave="leaveShow"
+        @mouseenter="enterShow"
+      >
         <h2 class="all">全部商品分类</h2>
-        <div class="sort">
+        <transition name="sort">
           <div
-            class="all-sort-list2"
-            @click="goSearch"
+            class="sort"
+            v-show="show"
           >
             <div
-              class="item"
-              v-for="(c1,index) in categoryList"
-              :key="c1.categoryId"
-              @mouseenter="changeIndex(index)"
-              :class="{cur:index==currentIndex}"
+              class="all-sort-list2"
+              @click="goSearch"
             >
-              <h3>
-                <a
-                  :data-categoryName="c1.categoryName"
-                  :data-category1Id="c1.categoryId"
-                >{{c1.categoryName}}</a>
-              </h3>
               <div
-                class="item-list clearfix"
-                :style="{display:index==currentIndex?'block':'none'}"
+                class="item"
+                v-for="(c1,index) in categoryList"
+                :key="c1.categoryId"
+                @mouseenter="changeIndex(index)"
+                :class="{cur:index==currentIndex}"
               >
+                <h3>
+                  <a
+                    :data-categoryName="c1.categoryName"
+                    :data-category1Id="c1.categoryId"
+                  >{{c1.categoryName}}</a>
+                </h3>
                 <div
-                  class="subitem"
-                  v-for="(c2,index) in c1.categoryChild"
-                  :key="c2.categoryId"
+                  class="item-list clearfix"
+                  :style="{display:index==currentIndex?'block':'none'}"
                 >
-                  <dl class="fore">
-                    <dt>
-                      <a
-                        :data-categoryName="c2.categoryName"
-                        :data-category2Id="c2.categoryId"
-                      >{{c2.categoryName}}</a>
-                    </dt>
-                    <dd>
-                      <em
-                        v-for="(c3,index) in c2.categoryChild"
-                        :key="c3.categoryId"
-                      >
+                  <div
+                    class="subitem"
+                    v-for="(c2,index) in c1.categoryChild"
+                    :key="c2.categoryId"
+                  >
+                    <dl class="fore">
+                      <dt>
                         <a
-                          :data-categoryName="c3.categoryName"
-                          :data-category3Id="c3.categoryId"
-                        >{{c3.categoryName}}</a>
-                      </em>
-                    </dd>
-                  </dl>
+                          :data-categoryName="c2.categoryName"
+                          :data-category2Id="c2.categoryId"
+                        >{{c2.categoryName}}</a>
+                      </dt>
+                      <dd>
+                        <em
+                          v-for="(c3,index) in c2.categoryChild"
+                          :key="c3.categoryId"
+                        >
+                          <a
+                            :data-categoryName="c3.categoryName"
+                            :data-category3Id="c3.categoryId"
+                          >{{c3.categoryName}}</a>
+                        </em>
+                      </dd>
+                    </dl>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </transition>
+
       </div>
 
       <nav class="nav">
@@ -81,6 +90,7 @@ export default {
   data() {
     return {
       currentIndex: -1,
+      show: true,
     };
   },
   watch: {},
@@ -94,9 +104,7 @@ export default {
     changeIndex: throttle(function (index) {
       this.currentIndex = index;
     }, 50),
-    leaveIndex() {
-      this.currentIndex = -1;
-    },
+    //跳转到查询界面
     goSearch(envent) {
       let element = envent.target;
       let { categoryname, category1id, category2id, category3id } =
@@ -111,16 +119,33 @@ export default {
         } else if (category2id) {
           query.category2Id = category2id;
         } else if (category3id) {
-          query.category2Id = category2id;
+          query.category3Id = category3id;
         }
-        location.query=query;
-        this.$router.push(location);
+        // location.query = query;
+        // this.$router.push(location);
+        if (this.$route.params) {
+          location.params = this.$route.params;
+          location.query = query;
+          this.$router.push(location);
+        }
+      }
+    },
+    //设置页面的显示与隐藏
+    enterShow() {
+      this.show = true;
+    },
+    leaveShow() {
+      this.currentIndex = -1;
+      if (this.$route.path != "/home") {
+        this.show = false;
       }
     },
   },
   created() {},
   mounted() {
-    this.$store.dispatch("categoryList");
+    if (this.$route.path != "/home") {
+      this.show = false;
+    }
   },
 };
 </script>
@@ -175,6 +200,7 @@ export default {
 
     .sort {
       position: absolute;
+      //overflow: hidden;
       left: 0;
       top: 45px;
       width: 210px;
@@ -258,6 +284,28 @@ export default {
           background-color: skyblue;
         }
       }
+    }
+    .sort-enter {
+      height: 0px;
+      opacity: 0;
+    }
+    .sort-enter-to {
+      height: 461px;
+      opacity: 1;
+    }
+    .sort-enter-active {
+      transition: all 0.5s linear;
+    }
+    .sort-leave {
+      height: 461px;
+      opacity: 1;
+    }
+    .sort-leave-to {
+      height: 0px;
+      opacity: 0;
+    }
+    .sort-leave-active {
+      transition: all 0.5s linear;
     }
   }
 }

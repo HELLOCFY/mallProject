@@ -1,7 +1,6 @@
 <template>
   <div>
-    {{$route.params}}
-    {{$route.query}}
+    <TypeNav></TypeNav>
   </div>
 </template>
 

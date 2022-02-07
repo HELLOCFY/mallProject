@@ -9,6 +9,10 @@ Vue.component(TypeNav.name,TypeNav);
 import router from '@/router'
 //引入仓库
 import store from '@/store'
+//引入mockServe让其执行一次,只要其执行一次不用管其是否进行了暴露，只要引入，里面的代码就会全部执行一次
+import '@/mock/mockServe.js'
+
+import "swiper/css/swiper.css"
 new Vue({
   render: h => h(App),
   //注册路由

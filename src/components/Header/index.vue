@@ -73,20 +73,16 @@ export default {
     };
   },
   watch: {},
-  computed: {
-  },
+  computed: {},
   methods: {
     //搜索按钮的回调函数向search路由跳转
     goSearch() {
-      this.$router.push({
+      let location = {
         name: "search",
-        params: {
-          keyword: this.keyword,
-        },
-        query: {
-          k: this.keyword.toUpperCase(),
-        },
-      });
+        params: { keyword: this.keyword ||undefined},
+      };
+      location.query = this.$route.query;
+      this.$router.push(location);
     },
   },
   created() {},

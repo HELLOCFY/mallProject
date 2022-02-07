@@ -18,6 +18,10 @@ export default {
     Header,
     Footer,
   },
+  mounted() {
+    //由于App.vue中的mounted只执行一次故只需要将公用组件的发请求的触发写到此处只发一次请求
+    this.$store.dispatch("categoryList");
+  },
 };
 </script>
 

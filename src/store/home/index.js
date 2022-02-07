@@ -1,15 +1,19 @@
 //search组件小仓库
 //引入请求模块
-import { reqCategoryList } from "@/api";
+import { reqCategoryList, reqGetBannerList } from "@/api";
 //state为数据
 const state={
     categoryList:[],
+    bannerList:[],
 };
 //mutations为修改state的唯一手段
 const mutations={
     CATEGORYLIST(state,categoryList){
         //由于有人改接口故此处切分数组
-        state.categoryList=categoryList.slice(0,16);
+        state.categoryList=categoryList.slice(0,15);
+    },
+    GETBANNERLIST(state,bannerList){
+        state.bannerList=bannerList;
     }
 };
 //actions处理action，可以书写业务逻辑和书写异步
@@ -20,7 +24,13 @@ const actions={
         if(result.code===200){
             commit("CATEGORYLIST",result.data)
         }
-        
+    },
+    //获取首页list数据
+    async getBannerList({commit}){
+        let result=await reqGetBannerList();
+        if(result.code==200){
+            commit("GETBANNERLIST",result.data)
+        }
     }
 };
 //getters可以理解为计算属性，用于简化仓库数据，让组件获取仓库数据更加方便
