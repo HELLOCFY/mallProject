@@ -2,9 +2,11 @@ import Vue from 'vue'
 import App from './App.vue'
 //三级联动注册为全局组件吧
 import TypeNav from '@/components/TypeNav';
+import Carousel from '@/components/Carousel'
 Vue.config.productionTip = false
 //使用Vue.component注册为全局组件
 Vue.component(TypeNav.name,TypeNav);
+Vue.component(Carousel.name,Carousel);
 //引入路由
 import router from '@/router'
 //引入仓库
@@ -13,6 +15,7 @@ import store from '@/store'
 import '@/mock/mockServe.js'
 
 import "swiper/css/swiper.css"
+
 new Vue({
   render: h => h(App),
   //注册路由
