@@ -42,7 +42,8 @@ export default new VueRouter({
             meta: { show: true }
         },
         {
-            path: "/search",
+            //params参数必须在path中有一个占位符，不然可能出现问题，例如页面不跳转
+            path: "/search/:keyword",
             component: Search,
             meta: { show: true },
             name: "search",

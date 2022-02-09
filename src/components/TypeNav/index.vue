@@ -113,7 +113,7 @@ export default {
         //整理路由跳转参数
         //路由跳转的参数this.$router.push({name:"xxx",query||params:{}})
         let location = { name: "search" };
-        let query = { catagoryName: categoryname };
+        let query = { categoryName: categoryname };
         if (category1id) {
           query.category1Id = category1id;
         } else if (category2id) {

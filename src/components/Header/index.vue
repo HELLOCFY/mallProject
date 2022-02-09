@@ -72,17 +72,30 @@ export default {
       keyword: "",
     };
   },
-  watch: {},
+  watch: {
+
+  },
   computed: {},
   methods: {
     //搜索按钮的回调函数向search路由跳转
     goSearch() {
-      let location = {
-        name: "search",
-        params: { keyword: this.keyword ||undefined},
-      };
-      location.query = this.$route.query;
-      this.$router.push(location);
+      //   let location = {
+      //     name: "search",
+      //   };
+      //   location.params={ keyword: this.keyword ||undefined};
+      //   location.query = this.$route.query;
+      //   console.log(1,location)
+      //   this.$router.push(location);
+      //   console.log(2,this.$route)
+      //
+      if (this.$route.query) {
+        let location = {
+          name: "search",
+          params: { keyword: this.keyword || undefined },
+        };
+        location.query = this.$route.query;
+        this.$router.push(location);
+      }
     },
   },
   created() {},
