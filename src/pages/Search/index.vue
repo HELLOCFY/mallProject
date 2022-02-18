@@ -11,38 +11,56 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <!-- 分类的面包屑 -->
+            <li
+              class="with-x"
+              v-if="searchParams.categoryName"
+            >{{searchParams.categoryName}}<i @click="removeCategoryName">×</i></li>
+            <!-- 关键字的面包屑 -->
+            <li
+              class="with-x"
+              v-if="searchParams.keyword"
+            >{{searchParams.keyword}}<i @click="removeKeyword">×</i></li>
+            <!-- 品牌的面包屑 -->
+            <li
+              class="with-x"
+              v-if="searchParams.trademark"
+            >{{searchParams.trademark.split(":")[1]}}<i @click="removeTradeMark">×</i></li>
+            <!-- 售卖属性的面包屑 -->
+            <li
+              class="with-x"
+              v-for="(attrValue,index) in searchParams.props"
+              :key="index"
+            >{{attrValue.split(":")[1]}}<i @click="removeAttr(index)">×</i></li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <!-- 自定义事件实现子传父 -->
+        <SearchSelector
+          @trademarkInfo="trademarkInfo"
+          @attrInfo="attrInfo"
+        />
 
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
+              <!-- 排序的结构 -->
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{active:isOne}" @click="changeOrder('1')">
+                  <a>综合<span
+                      class="iconfont"
+                      :class="{'icon-angle-up':isAsc,'icon-angle-up-copy':!isAsc}"
+                      v-show="isOne"
+                    ></span></a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
-                </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{active:isTwo}" @click="changeOrder('2')">
+                  <a>价格<span
+                      class="iconfont"
+                      :class="{'icon-angle-up':isAsc,'icon-angle-up-copy':!isAsc}"
+                      v-show="isTwo"
+                    ></span></a>
                 </li>
               </ul>
             </div>
@@ -93,35 +111,7 @@
               </li>
             </ul>
           </div>
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <Pagination></Pagination>
         </div>
       </div>
     </div>
@@ -154,7 +144,7 @@ export default {
         category3Id: "", //三级分类id
         categoryName: "", //分类的名字
         keyword: "", //搜索框的关键字
-        order: "", //排序的顺序，升序和降序
+        order: "1:desc", //排序的顺序，升序和降序（初始值：综合降序 1：desc）
         pageNo: 1, //分页器当前的页面
         pageSize: 10, //每一页展示数据的个数
         props: [], //平台售卖属性的参数
@@ -164,18 +154,90 @@ export default {
   },
   computed: {
     ...mapGetters(["goodsList"]),
+    isOne() {
+      return this.searchParams.order.indexOf("1") != -1;
+    },
+    isTwo() {
+      return this.searchParams.order.indexOf("2") != -1;
+    },
+    isAsc() {
+      return this.searchParams.order.indexOf("asc") != -1;
+    },
   },
   methods: {
     //把向服务器发请求封装为一个函数
     getData() {
       this.$store.dispatch("getSearchList", this.searchParams);
     },
+    //删除分类名字
+    removeCategoryName() {
+      //当参数为可有可无的时候，如果将字段设置为undefined的时候字段不会发送给服务器
+      this.searchParams.categoryName = undefined;
+      this.searchParams.category1Id = undefined;
+      this.searchParams.category2Id = undefined;
+      this.searchParams.category3Id = undefined;
+      //this.getData();
+      //地址栏需要改变
+      this.$router.push({ name: "search", params: this.$route.params });
+    },
+    removeKeyword() {
+      this.searchParams.keyword = undefined;
+      //this.getData();
+      this.$bus.$emit("clear");
+      this.$route.params.keyword = undefined;
+      //改变地址栏
+      this.$router.push({ name: "search", query: this.$route.query });
+    },
+    //自定义事件的回调
+    trademarkInfo(trademark) {
+      this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
+      this.getData();
+    },
+    //删除品牌信息
+    removeTradeMark() {
+      this.searchParams.trademark = undefined;
+      this.getData();
+    },
+    //手机平台属性的函数，自定义事件
+    attrInfo(attr, attrValue) {
+      //整理参数格式
+      let props = `${attr.attrId}:${attrValue}:${attr.attrName}`;
+      // 数组去重
+      // this.searchParams.props.push(props);
+      // this.searchParams.props = Array.from(new Set(this.searchParams.props));
+      //此处为一个优化，当数组中存在props时不再继续发送请求
+      if (this.searchParams.props.indexOf(props) == -1) {
+        this.searchParams.props.push(props);
+        this.getData();
+      }
+    },
+    //删除售卖属性
+    removeAttr(index) {
+      this.searchParams.props.splice(index, 1);
+      //再次发送请求
+      this.getData();
+    },
+    //排序的操作
+    //flag为形参判断用户点击的是综合还是价格
+    changeOrder(flag){
+      let originOrder=this.searchParams.order;
+      let originFlag=originOrder.split(":")[0];
+      let originSort=originOrder.split(":")[1];
+      if(flag==originFlag){
+        originSort=="asc"?this.searchParams.order = flag+":"+"desc": this.searchParams.order=flag+":"+"asc";
+        this.getData();
+      }
+      if(flag!=originFlag){
+        originFlag=="1"?this.searchParams.order="2"+":"+"desc":this.searchParams.order="1"+":"+"desc";
+      }
+      this.getData();
+    }
   },
   watch: {
     $route(newVal, oldVal) {
-      this.searchParams.category1Id = "";
-      this.searchParams.category2Id = "";
-      this.searchParams.category3Id = "";
+      this.searchParams.category1Id = undefined;
+      this.searchParams.category2Id = undefined;
+      this.searchParams.category3Id = undefined;
       Object.assign(this.searchParams, this.$route.query, this.$route.params);
       this.getData();
     },

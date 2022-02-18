@@ -305,7 +305,7 @@ export default {
       opacity: 0;
     }
     .sort-leave-active {
-      transition: all 0.5s linear;
+      transition: all 0.1s linear;
     }
   }
 }

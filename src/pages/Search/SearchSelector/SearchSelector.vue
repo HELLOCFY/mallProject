@@ -6,7 +6,7 @@
         <ul class="logo-list">
           <li
             v-for="(trademark,index) in trademarkList"
-            :key="trademark.tmId"
+            :key="trademark.tmId" @click="trademarkHandler(trademark)"
           >{{trademark.tmName}}</li>
         </ul>
       </div>
@@ -18,6 +18,7 @@
         <a href="javascript:void(0);">更多</a>
       </div>
     </div>
+    <!-- 平台售卖属性 -->
     <div
       class="type-wrap"
       v-for="(attr,index) in attrsList"
@@ -29,6 +30,7 @@
           <li
             v-for="(attrValue,index) in attr.attrValueList"
             :key="index"
+            @click="attrInfo(attr,attrValue)"
           >
             <a>{{attrValue}}</a>
           </li>
@@ -47,6 +49,16 @@ export default {
   computed: {
     ...mapGetters(["trademarkList", "attrsList"]),
   },
+  methods:{
+    trademarkHandler(trademark){
+      //自定义事件实现子传父
+      this.$emit('trademarkInfo',trademark)
+    },
+    // 平台售卖属性
+    attrInfo(attr,attrValue){
+      this.$emit("attrInfo",attr,attrValue)
+    }
+  }
 };
 </script>
 
