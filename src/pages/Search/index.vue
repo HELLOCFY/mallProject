@@ -48,14 +48,20 @@
             <div class="navbar-inner filter">
               <!-- 排序的结构 -->
               <ul class="sui-nav">
-                <li :class="{active:isOne}" @click="changeOrder('1')">
+                <li
+                  :class="{active:isOne}"
+                  @click="changeOrder('1')"
+                >
                   <a>综合<span
                       class="iconfont"
                       :class="{'icon-angle-up':isAsc,'icon-angle-up-copy':!isAsc}"
                       v-show="isOne"
                     ></span></a>
                 </li>
-                <li :class="{active:isTwo}" @click="changeOrder('2')">
+                <li
+                  :class="{active:isTwo}"
+                  @click="changeOrder('2')"
+                >
                   <a>价格<span
                       class="iconfont"
                       :class="{'icon-angle-up':isAsc,'icon-angle-up-copy':!isAsc}"
@@ -111,7 +117,13 @@
               </li>
             </ul>
           </div>
-          <Pagination></Pagination>
+          <Pagination
+            :pageNo="searchParams.pageNo"
+            :pageSize="searchParams.pageSize"
+            :total="total"
+            :continues="5"
+            @getPageNo="getPageNo"
+          ></Pagination>
         </div>
       </div>
     </div>
@@ -120,7 +132,7 @@
 
 <script>
 import SearchSelector from "./SearchSelector/SearchSelector";
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 export default {
   name: "Search",
 
@@ -146,7 +158,7 @@ export default {
         keyword: "", //搜索框的关键字
         order: "1:desc", //排序的顺序，升序和降序（初始值：综合降序 1：desc）
         pageNo: 1, //分页器当前的页面
-        pageSize: 10, //每一页展示数据的个数
+        pageSize: 5, //每一页展示数据的个数
         props: [], //平台售卖属性的参数
         trademark: "", //品牌
       },
@@ -163,6 +175,10 @@ export default {
     isAsc() {
       return this.searchParams.order.indexOf("asc") != -1;
     },
+    //获取search模块展示的产品数据
+    ...mapState({
+      total: (state) => state.search.searchList.total,
+    }),
   },
   methods: {
     //把向服务器发请求封装为一个函数
@@ -219,19 +235,29 @@ export default {
     },
     //排序的操作
     //flag为形参判断用户点击的是综合还是价格
-    changeOrder(flag){
-      let originOrder=this.searchParams.order;
-      let originFlag=originOrder.split(":")[0];
-      let originSort=originOrder.split(":")[1];
-      if(flag==originFlag){
-        originSort=="asc"?this.searchParams.order = flag+":"+"desc": this.searchParams.order=flag+":"+"asc";
+    changeOrder(flag) {
+      let originOrder = this.searchParams.order;
+      let originFlag = originOrder.split(":")[0];
+      let originSort = originOrder.split(":")[1];
+      if (flag == originFlag) {
+        originSort == "asc"
+          ? (this.searchParams.order = flag + ":" + "desc")
+          : (this.searchParams.order = flag + ":" + "asc");
         this.getData();
       }
-      if(flag!=originFlag){
-        originFlag=="1"?this.searchParams.order="2"+":"+"desc":this.searchParams.order="1"+":"+"desc";
+      if (flag != originFlag) {
+        originFlag == "1"
+          ? (this.searchParams.order = "2" + ":" + "desc")
+          : (this.searchParams.order = "1" + ":" + "desc");
       }
       this.getData();
-    }
+    },
+    //子组件通知父组件改变的页码
+    getPageNo(page) {
+      this.searchParams.pageNo = page;
+      console.log(this.searchParams.pageNo)
+      this.getData();
+    },
   },
   watch: {
     $route(newVal, oldVal) {
