@@ -81,10 +81,10 @@
               >
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a
-                      href="item.html"
-                      target="_blank"
-                    ><img :src="good.defaultImg" /></a>
+                    <!-- 路由跳转要带params参数good.id -->
+                    <router-link :to="`/detail/${good.id}`">
+                      <img :src="good.defaultImg" />
+                    </router-link>
                   </div>
                   <div class="price">
                     <strong>
@@ -255,7 +255,7 @@ export default {
     //子组件通知父组件改变的页码
     getPageNo(page) {
       this.searchParams.pageNo = page;
-      console.log(this.searchParams.pageNo)
+      console.log(this.searchParams.pageNo);
       this.getData();
     },
   },

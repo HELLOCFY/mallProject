@@ -24,3 +24,8 @@ export const reqFloorList = () => mockRequests({ url: '/floor', method: 'get' })
 //   }
 //params至少是一个空对象
 export const reqGetSearchInfo = (params) => requests({ url: "/list", method: 'post', data: params })
+//获取产品详情信息
+// /api/item/{ skuId }
+export const reqGoodsInfo=(skuId)=>requests({url:`/item/${skuId}`,method:'get'})
+//6.添加到购物车(对已有物品进行数量改动)  /api/cart/addToCart/{ skuId }/{ skuNum } post
+export const reqAddOrUpdateShopCart=(skuId,skuNum)=>requests({url:`/cart/addToCart/${skuId}/${skuNum} `,method:'post'});
