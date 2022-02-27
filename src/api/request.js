@@ -1,3 +1,5 @@
+//引入大仓库
+import store from '@/store'
 //对于axios进行二此封装
 import axios from "axios";
 //引入进度条
@@ -14,6 +16,10 @@ const requests=axios.create({
 //请求拦截器
 requests.interceptors.request.use((config)=>{
     //config配置对象，对象里面有一个属性很重要，headers
+    if(store.state.detail.uuid_token){
+        //给请求头添加一个字段
+        config.headers.userTempId=store.state.detail.uuid_token;
+    }
     //进度条开始
     nprogress.start();
     return config;

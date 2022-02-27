@@ -29,3 +29,10 @@ export const reqGetSearchInfo = (params) => requests({ url: "/list", method: 'po
 export const reqGoodsInfo=(skuId)=>requests({url:`/item/${skuId}`,method:'get'})
 //6.添加到购物车(对已有物品进行数量改动)  /api/cart/addToCart/{ skuId }/{ skuNum } post
 export const reqAddOrUpdateShopCart=(skuId,skuNum)=>requests({url:`/cart/addToCart/${skuId}/${skuNum} `,method:'post'});
+//获取购物车数据 /api/cart/cartList get
+export const reqCartList=()=>requests({url:"/cart/cartList",method:'get'})
+//删除购物车商品  /api/cart/deleteCart/{skuId}     DELETE
+export const reqDeleteCartById=(skuId)=>requests({url:`/cart/deleteCart/${skuId}`,method:'delete'});
+//切换商品的选择状态
+//     /api/cart/checkCart/{skuId}/{isChecked}  get
+export const reqUpdateCheckedById=(skuId,isChecked)=>requests({url:`/cart/checkCart/${skuId}/${isChecked}`,method:'get'})

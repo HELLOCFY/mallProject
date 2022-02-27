@@ -98,7 +98,10 @@
                 >-</a>
               </div>
               <div class="add">
-                <a href="javascript:" @click="addShopCar">加入购物车</a>
+                <a
+                  href="javascript:"
+                  @click="addShopCar"
+                >加入购物车</a>
               </div>
             </div>
           </div>
@@ -382,9 +385,9 @@ import { mapGetters } from "vuex";
 export default {
   name: "Detail",
   data() {
-    return{
-      skuNum:1
-    }
+    return {
+      skuNum: 1,
+    };
   },
   components: {
     ImageList,
@@ -401,28 +404,39 @@ export default {
       return this.skuInfo.skuImageList || [];
     },
   },
-  methods:{
-    changeActive(saleAttrValue,arr){
+  methods: {
+    changeActive(saleAttrValue, arr) {
       //遍历全部售卖属性的为0，取消高亮
-      arr.forEach(item=>{
+      arr.forEach((item) => {
         item.isChecked = 0;
       });
       saleAttrValue.isChecked = 1;
     },
-    changeSkuNum(event){
-      let value = event.target.value*1;
-      if(isNaN(value)||value<1){
-        this.skuNum=1
-      }
-      else{
-        this.skuNum=Math.floor(value);
+    changeSkuNum(event) {
+      let value = event.target.value * 1;
+      if (isNaN(value) || value < 1) {
+        this.skuNum = 1;
+      } else {
+        this.skuNum = Math.floor(value);
       }
     },
-    addShopCar(){
+    async addShopCar() {
       //派发action
-      this.$store.dispatch('addOrUpdateShopCart',{skuId:this.$route.params.skuid,skuNum:this.skuNum})
-    }
-  }
+      try {
+        await this.$store.dispatch("addOrUpdateShopCart", {
+          skuId: this.$route.params.skuid,
+          skuNum: this.skuNum,
+        });
+        //使用会话存储数据
+        sessionStorage.setItem("SKUINFO",JSON.stringify(this.skuInfo))
+        //进行路由跳转
+        this.$router.push({ name: "addcartsuccess" ,query:{skuNum:this.skuNum}});
+      } catch (error) {
+        //失败
+        alert(error.message);
+      }
+    },
+  },
 };
 </script>
 

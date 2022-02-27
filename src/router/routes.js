@@ -3,7 +3,14 @@ import Search from '@/pages/Search';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import Detail from '@/pages/Detail';
+import AddCartSuccess from '@/pages/AddCartSuccess';
+import ShopCart from '@/pages/ShopCart';
 export default [
+    {
+        path: "/shopcart",
+        component: ShopCart,
+        meta: { show: true }
+    },
     {
         path: "/home",
         component: Home,
@@ -34,5 +41,11 @@ export default [
         path:"/detail/:skuid",
         component:Detail,
         meta: { show:true}
+    },
+    {
+        path:"/addCartSuccess",
+        name:'addcartsuccess',
+        component:AddCartSuccess,
+        meta: { isShow:true},
     }
 ]
