@@ -5,7 +5,13 @@ import Register from '@/pages/Register';
 import Detail from '@/pages/Detail';
 import AddCartSuccess from '@/pages/AddCartSuccess';
 import ShopCart from '@/pages/ShopCart';
+import Trade from '@/pages/Trade'
 export default [
+    {
+        path: "/trade",
+        component: Trade,
+        meta: { show: true }
+    },
     {
         path: "/shopcart",
         component: ShopCart,
@@ -38,14 +44,14 @@ export default [
         redirect: "/home"
     },
     {
-        path:"/detail/:skuid",
-        component:Detail,
-        meta: { show:true}
+        path: "/detail/:skuid",
+        component: Detail,
+        meta: { show: true }
     },
     {
-        path:"/addCartSuccess",
-        name:'addcartsuccess',
-        component:AddCartSuccess,
-        meta: { isShow:true},
+        path: "/addCartSuccess",
+        name: 'addcartsuccess',
+        component: AddCartSuccess,
+        meta: { isShow: true },
     }
 ]

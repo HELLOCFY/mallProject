@@ -94,8 +94,7 @@
         <div class="sumbtn">
           <a
             class="sum-btn"
-            href="###"
-            target="_blank"
+            @click="$router.push('/trade')"
           >结算</a>
         </div>
       </div>

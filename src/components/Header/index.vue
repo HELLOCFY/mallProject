@@ -5,7 +5,8 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+          <!-- 没有用户名 -->
+          <p v-if="!userName">
             <span>请</span>
             <router-link to="/login">登录</router-link>
             <router-link
@@ -13,6 +14,14 @@
               href="###"
               class="register"
             >免费注册</router-link>
+          </p>
+          <!-- 有用户名 -->
+          <p v-else>
+            <a>{{userName}}</a>
+            <a
+              class="register"
+              @click="logout"
+            >退出登录</a>
           </p>
         </div>
         <div class="typeList">
@@ -72,22 +81,15 @@ export default {
       keyword: "",
     };
   },
-  watch: {
-
+  watch: {},
+  computed: {
+    userName() {
+      return this.$store.state.user.userInfo.name;
+    },
   },
-  computed: {},
   methods: {
     //搜索按钮的回调函数向search路由跳转
     goSearch() {
-      //   let location = {
-      //     name: "search",
-      //   };
-      //   location.params={ keyword: this.keyword ||undefined};
-      //   location.query = this.$route.query;
-      //   console.log(1,location)
-      //   this.$router.push(location);
-      //   console.log(2,this.$route)
-      //
       if (this.$route.query) {
         let location = {
           name: "search",
@@ -97,13 +99,21 @@ export default {
         this.$router.push(location);
       }
     },
+    //退出登录
+    async logout() {
+      try {
+        await this.$store.dispatch("userLogout");
+        //退出成功就回到首页
+        this.$router.push("/home");
+      } catch (error) {}
+    },
   },
   created() {},
   mounted() {
     //通过全局事件总线清楚关键字
-    this.$bus.$on("clear",()=>{
-      this.keyword="";
-    })
+    this.$bus.$on("clear", () => {
+      this.keyword = "";
+    });
   },
 };
 </script>
