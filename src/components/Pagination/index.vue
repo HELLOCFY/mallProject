@@ -11,7 +11,7 @@
     <button
       v-for="(page,index) in startNumAndEndNum.end"
       :key="page"
-      v-if="page>=startNumAndEndNum.start"
+      v-if="page=>startNumAndEndNum.start"
       @click="$emit('getPageNo',page)"
       :class="{active:pageNo==page}"
     >{{page}}</button>
