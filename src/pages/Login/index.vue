@@ -119,8 +119,9 @@ export default {
         phone &&
           password &&
           (await this.$store.dispatch("userLogin", { phone, password }));
-          //跳转到home
-          this.$router.push('/home')
+        console.log(this.$route.query.redirect);
+        let toPath = this.$route.query.redirect || "/home";
+        this.$router.push(toPath);
       } catch (error) {
         alert(error.message);
       }

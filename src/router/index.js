@@ -38,6 +38,7 @@ let router = new VueRouter({
         return { y: 0 }
     }
 });
+//全局导航守卫
 router.beforeEach(async (to, from, next) => {
     //为了测试全部放行
     //next();
@@ -69,8 +70,16 @@ router.beforeEach(async (to, from, next) => {
         }
     }
     else {
-        //未登录
-        next();
+        //未登录不能去交易相关的界面，支付相关，以及个人中心
+        let toPath=to.path;
+        console.log(toPath)
+        if(toPath.indexOf('/trade')!=-1||toPath.indexOf('/pay')!=-1||toPath.indexOf('/center')!=-1){
+            next('/login'+"?redirect="+toPath);
+        }else{
+            next();
+        }
     }
 });
+
+
 export default router;

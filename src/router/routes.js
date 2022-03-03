@@ -1,31 +1,19 @@
-import Home from '@/pages/Home';
-import Search from '@/pages/Search';
-import Login from '@/pages/Login';
-import Register from '@/pages/Register';
-import Detail from '@/pages/Detail';
-import AddCartSuccess from '@/pages/AddCartSuccess';
-import ShopCart from '@/pages/ShopCart';
-import Trade from '@/pages/Trade';
-import Pay from '@/pages/Pay';
-import PaySuccess from '@/pages/PaySuccess';
-import Center from '@/pages/Center';
-//引入二级路由组件
-import MyOrder from '@/pages/Center/myOrder';
-import GroupOrder from '@/pages/Center/groupOrder';
+//全部使用路由懒加载
 export default [
     {
+        //全部使用路由懒加载
         path: "/center",
-        component: Center,
+        component: () => import('@/pages/Center'),
         meta: { show: true },
         // 二级路由组件
         children: [
             {
                 path: 'myorder',
-                component: MyOrder
+                component: () => import('@/pages/Center/myOrder')
             },
             {
                 path: 'grouporder',
-                component: GroupOrder
+                component: () => import('@/pages/Center/groupOrder')
             },
             {
                 path: '/center',
@@ -35,34 +23,42 @@ export default [
     },
     {
         path: "/trade",
-        component: Trade,
-        meta: { show: true }
+        component: () => import('@/pages/Trade'),
+        meta: { show: true },
+        //路由独享守卫
+        beforeEnter: (to, from, next) => {
+            if (from.path == '/shopcart') {
+                next();
+            } else {
+                next(false);
+            }
+        }
     },
     {
         path: "/shopcart",
-        component: ShopCart,
+        component: () => import('@/pages/ShopCart'),
         meta: { show: true }
     },
     {
         path: "/home",
-        component: Home,
+        component: () => import('@/pages/Home'),
         meta: { show: true }
     },
     {
         //params参数必须在path中有一个占位符，不然可能出现问题，例如页面不跳转
         path: "/search/:keyword",
-        component: Search,
+        component: () => import('@/pages/Search'),
         meta: { show: true },
         name: "search",
     },
     {
         path: "/login",
-        component: Login,
+        component: () => import('@/pages/Login'),
         meta: { show: false }
     },
     {
         path: "/register",
-        component: Register,
+        component: () => import('@/pages/Register'),
         meta: { show: false }
     },
     {
@@ -71,23 +67,31 @@ export default [
     },
     {
         path: "/detail/:skuid",
-        component: Detail,
+        component: () => import('@/pages/Detail'),
         meta: { show: true }
     },
     {
         path: "/addCartSuccess",
         name: 'addcartsuccess',
-        component: AddCartSuccess,
+        component: () => import('@/pages/AddCartSuccess'),
         meta: { isShow: true },
     },
     {
         path: "/pay",
-        component: Pay,
+        component: () => import('@/pages/Pay'),
         meta: { isShow: true },
+        beforeEnter(to, from, next) {
+            if (from.path == '/trade') {
+                next();
+            }
+            else {
+                next(false);
+            }
+        }
     },
     {
         path: "/paysuccess",
-        component: PaySuccess,
+        component: () => import('@/pages/PaySuccess'),
         meta: { isShow: true },
     },
 ]

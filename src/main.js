@@ -1,10 +1,13 @@
 import Vue from 'vue'
+
 import App from './App.vue'
 //三级联动注册为全局组件吧
 import TypeNav from '@/components/TypeNav';
 import Carousel from '@/components/Carousel';
 import Pagination from '@/components/Pagination';
 import {MessageBox} from 'element-ui';
+//引入校验插件
+import '@/plugins/validate';
 Vue.config.productionTip = false
 //使用Vue.component注册为全局组件
 Vue.component(TypeNav.name,TypeNav);
@@ -20,7 +23,12 @@ import router from '@/router'
 import store from '@/store'
 //引入mockServe让其执行一次,只要其执行一次不用管其是否进行了暴露，只要引入，里面的代码就会全部执行一次
 import '@/mock/mockServe.js'
-
+import VueLazyload from 'vue-lazyload';
+import scdx from './assets/scdx.png'
+Vue.use(VueLazyload,{
+  //懒加载默认的图片
+  loading:scdx,
+});
 import "swiper/css/swiper.css"
 //引入api中的所有接口
 import * as API from '@/api'
